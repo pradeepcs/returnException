@@ -1,0 +1,24 @@
+{
+    "action": "EXCESS",
+    "customer_return_order_id": "Y100000651",
+    "enterprise_code": "LMG_UAE",
+    "ship_node": "DC NY",
+    "rdo_number": "123456",
+    "customer_order_id": "Y100000635",
+    "order_lines": [
+        {
+            "disposition_code": "GOOD",
+            "excess_quantity": 3,
+            "is_item_on_customer_order": "Y",
+            "is_lmg_item": "Y",
+            "item_id": "LMG1"
+        },
+		{
+            "disposition_code": "GOOD",
+            "excess_quantity": 5,
+            "is_item_on_customer_order": "Y",
+            "is_lmg_item": "Y",
+            "item_id": "LMG2"
+        }
+    ]
+}

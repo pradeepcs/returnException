@@ -1,0 +1,48 @@
+{
+  "customer_order_id": "Y100000635",
+  "enterprise_code": "LMG_UAE",
+  "status": "Success",
+  "source": "G",
+  "total_refund_option": 1,
+  "refund_options": [
+    {
+      "mode": "CREDIT_CARD",
+      "cash_refund": "N",
+      "total_loyalty_refund_amount": 5,
+      "non_refunded_voucher_amount": 0,
+      "delivery_cost": 15,
+      "payment_cost": 0,
+      "loyalty_recovery_amount": 0,
+      "payment_methods": [
+        {
+          "payment_type": "CREDIT_CARD",
+          "payment_code": "CCRD",
+          "amount": 20,
+          "voucher_code": ""
+        }
+      ]
+    }
+  ],
+  "order_lines": [
+    {
+      "item_id": "LMG1",
+      "item_description": "Men Shirt",
+      "unit_price": 20.8,
+      "discounted_unit_price": 20.8,
+      "return_quantity": 3,
+      "ordered_quantity": 6,
+      "item_tax": 1.0,
+      "department_code": ""
+    },
+    {
+      "item_id": "LMG2",
+      "item_description": "Men Shirt",
+      "unit_price": 20.8,
+      "discounted_unit_price": 20.8,
+      "return_quantity": 5,
+      "ordered_quantity": 10,
+      "item_tax": 1.0,
+      "department_code": ""
+    }
+  ]
+}
