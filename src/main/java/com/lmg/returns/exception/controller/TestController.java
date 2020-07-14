@@ -1,16 +1,15 @@
 package com.lmg.returns.exception.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.lmg.returns.exception.model.order.returns.CreateReturnsReq;
-import com.lmg.returns.exception.model.order.returns.ReturnExceptionReq;
-import com.lmg.returns.exception.model.order.returns.ReturnOrdersResponse;
-import com.lmg.returns.exception.model.order.returns.ReturnRefundEnquiryResp;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.lmg.returns.exception.model.order.returns.*;
 import com.lmg.returns.exception.model.order.sales.CustomerOrderDetailsResponse;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.io.IOException;
+import java.util.Map;
 
 
 @RequestMapping("/v1/test")
@@ -19,7 +18,9 @@ public class TestController {
 
     @GetMapping("/customerOrder")
     public Mono<CustomerOrderDetailsResponse> getCustomer() throws IOException {
-        CustomerOrderDetailsResponse customerOrder = new ObjectMapper().readValue(testCustomerOrder, CustomerOrderDetailsResponse.class);
+        CustomerOrderDetailsResponse customerOrder = new ObjectMapper()
+                .configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false)
+                .readValue(testCustomerOrder, CustomerOrderDetailsResponse.class);
         return Mono.just(customerOrder);
     }
 
@@ -220,5 +221,17 @@ public class TestController {
         return Mono.empty();
     }
 
+    @DeleteMapping("/returnOrder")
+    public Mono<Void> deleteOrder(@PathVariable String returnOrderId, @RequestHeader Map<String, String> headers) throws IOException {
+        System.out.println("returnOrderId " + returnOrderId);
+        System.out.println("headers " + headers);
+        return Mono.empty();
+    }
+
+    @PatchMapping("/returnOrder")
+    public Mono<Void> patchReturnOrder(@RequestBody UpdateReturnOrderReq updateReturnOrderReq) throws IOException {
+        System.out.println("updateReturnOrderReq " + updateReturnOrderReq);
+        return Mono.empty();
+    }
 
 }

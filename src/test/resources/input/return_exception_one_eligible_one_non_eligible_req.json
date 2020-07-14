@@ -17,7 +17,7 @@
             "disposition_code": "GOOD",
             "excess_quantity": 5,
             "is_item_on_customer_order": "Y",
-            "is_lmg_item": "Y",
+            "is_lmg_item": "N",
             "item_id": "LMG2"
         }
     ]

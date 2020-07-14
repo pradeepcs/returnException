@@ -3,8 +3,10 @@ package com.lmg.returns.exception.service;
 import com.lmg.returns.exception.model.order.returns.*;
 import com.lmg.returns.exception.model.order.sales.CustomerOrderDetailsResponse;
 import com.lmg.returns.exception.model.order.sales.CustomerOrderDetailsResponseOrderLines;
+import com.lmg.returns.exception.util.ApplicationConfig;
 import com.lmg.returns.exception.util.RequestMapper;
 import com.lmg.returns.exception.util.ReturnExceptionHelper;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.SerializationUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +18,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Service("returnExceptionService")
+@Slf4j
 public class ReturnExceptionService {
 
     @Autowired
@@ -24,6 +27,9 @@ public class ReturnExceptionService {
     @Autowired
     ReturnRefundEnquiryService returnRefundEnquiryService;
 
+    @Autowired
+    ApplicationConfig applicationConfig;
+
     public Mono<Void> processReturnException(ReturnExceptionReq returnExceptionReq) {
         Map<String, Object> contextMap = new HashMap<>();
         Mono<CustomerOrderDetailsResponse> customerOrder = orderService.getsCustomerOrder(
@@ -31,7 +37,7 @@ public class ReturnExceptionService {
         customerOrder.subscribe(customerOrderDetailsResponse -> {
             contextMap.put("customerOrder", customerOrderDetailsResponse);
             processReturnException(returnExceptionReq, contextMap);
-        });
+        }, onException -> System.out.println(onException)); //TODO
         return Mono.empty();
     }
 
@@ -141,9 +147,9 @@ public class ReturnExceptionService {
 
 
     private void deleteExistingReturnOrders(Map<String, Object> contextMap) {
-        List<String> returnOrdersToDelete = (List<String>) contextMap.get("returnOrdersToDelete");
-        if(CollectionUtils.isNotEmpty(returnOrdersToDelete)) {
-            returnOrdersToDelete.stream()
+        Set<String> returnOrdersToCancel = (Set<String>) contextMap.get("returnOrdersToCancel");
+        if(CollectionUtils.isNotEmpty(returnOrdersToCancel)) {
+            returnOrdersToCancel.stream()
                     .forEach(returnOrderId -> orderService.deleteReturnOrder(returnOrderId,
                             contextMap.get("enterpriseCode").toString()));
         }
@@ -154,7 +160,7 @@ public class ReturnExceptionService {
         Map<String, BigDecimal> itemIdToReturnableQty = (Map<String, BigDecimal>) contextMap.get("itemIdToReturnableQty");
 
         Set<String> returnOrdersToCancel = (Set<String>) contextMap.get("returnOrdersToCancel");
-        if (CollectionUtils.isEmpty(returnOrdersToCancel)) {
+        if (returnOrdersToCancel == null) {
             returnOrdersToCancel = new HashSet<>();
             contextMap.put("returnOrdersToCancel", returnOrdersToCancel);
         }
@@ -180,7 +186,6 @@ public class ReturnExceptionService {
         }
     }
 
-
     private List<ReturnOrdersResponseReturnOrders> getCancellableReturnOrdersForAnItem(ReturnExcessReqOrderLine returnEligibleLine,
                                                      Map<String, Object> contextMap) {
         ReturnOrdersResponse returnOrdersResponse = (ReturnOrdersResponse) contextMap.get("returnOrders");
@@ -193,7 +198,7 @@ public class ReturnExceptionService {
     private boolean canDeleteReturn(ReturnExcessReqOrderLine returnEligibleLine,
                                     ReturnOrdersResponseReturnOrders returnOrder, Map<String, ?> contextMap) {
         //TODO Check status?
-        return (Arrays.asList("ONLINE", "COCKPIT").contains(returnOrder.getSource())
+        return (applicationConfig.getReturnOrderSourceType().contains(returnOrder.getSource())
                 && "N".equalsIgnoreCase(returnOrder.getRefundInitiatedFlag())
                 && !returnOrder.getCustomerReturnOrderId().equals(contextMap.get("customerReturnOrderId").toString()));
     }
@@ -203,9 +208,6 @@ public class ReturnExceptionService {
         return returnOrder.getOrderLines().stream()
                 .filter(returnLine -> returnLine.getItemId().equals(returnEligibleLine.getItemId())).count() > 0;
     }
-
-
-
 
     private Mono<ReturnOrdersResponse> getReturnOrdersForCustomerSalesOrder(Map<String, Object> contextMap) {
         return orderService.getReturnOrders(

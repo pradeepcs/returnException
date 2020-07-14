@@ -24,7 +24,6 @@ public class ReturnRefundEnquiryService {
                 .flatMap(clientResponse -> clientResponse.bodyToMono(ReturnRefundEnquiryResp.class));
     }
 
-
     public static ReturnRefundEnquiryReq convertToReturnRefundEnquiryReq(List<ReturnExcessReqOrderLine> returnEligibleLines,
                                                                    Map<String, Object> contextMap) {
 
