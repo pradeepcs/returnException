@@ -1,0 +1,26 @@
+app:
+    profiles.active: dev
+---
+app:
+    profiles: dev
+    customerOrderURI: /v1/test/customerOrder
+    customerReturnOrderURI: /v1/test/returnOrders
+    returnOrderSourceType:
+        - ONLINE
+        - COCKPIT
+---
+app:
+    profiles: uat
+    customerOrderURI: /v1/test/customerOrder
+    customerReturnOrderURI: /v1/test/returnOrders
+    returnOrderSourceType:
+        - ONLINE
+        - COCKPIT
+---
+app:
+    profiles: prod
+    customerOrderURI: /v1/test/customerOrder
+    customerReturnOrderURI: /v1/test/returnOrders
+    returnOrderSourceType:
+        - ONLINE
+        - COCKPIT

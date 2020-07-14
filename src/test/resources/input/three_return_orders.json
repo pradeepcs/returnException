@@ -1,0 +1,50 @@
+{
+  "return_orders": [
+    {
+      "customer_return_order_id": "Y100000651",
+      "enterprise_code": "LMG_UAE",
+      "source": "ONLINE",
+      "return_order_status": "Return Created",
+      "return_order_date": "",
+      "refund_initiated_flag": "N",
+      "order_lines": [
+        {
+          "item_id": "LMG1",
+          "return_quantity": 5
+        },
+        {
+          "item_id": "LMG2",
+          "return_quantity": 5
+        }
+      ]
+    },
+    {
+      "customer_return_order_id": "Y100000652",
+      "enterprise_code": "LMG_UAE",
+      "source": "ONLINE",
+      "return_order_status": "Return Created",
+      "return_order_date": "",
+      "refund_initiated_flag": "N",
+      "order_lines": [
+        {
+          "item_id": "LMG2",
+          "return_quantity": 2
+        }
+      ]
+    },
+    {
+      "customer_return_order_id": "Y100000653",
+      "enterprise_code": "LMG_UAE",
+      "source": "ONLINE",
+      "return_order_status": "Return Created",
+      "return_order_date": "",
+      "refund_initiated_flag": "N",
+      "order_lines": [
+        {
+          "item_id": "LMG2",
+          "return_quantity": 4
+        }
+      ]
+    }
+  ]
+}

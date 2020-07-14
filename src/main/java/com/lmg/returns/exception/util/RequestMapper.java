@@ -96,5 +96,31 @@ public class RequestMapper {
         return updateReturnOrderReq;
     }
 
+    public static ReturnRefundEnquiryReq convertToReturnRefundEnquiryReq(List<ReturnExcessReqOrderLine> returnEligibleLines,
+                                                                         Map<String, Object> contextMap) {
+
+        CustomerOrderDetailsResponse customerOrder = (CustomerOrderDetailsResponse) contextMap.get("customerOrder");
+        ReturnRefundEnquiryReq refundEnquiryReq = new ReturnRefundEnquiryReq();
+        List<ReturnRefundEnquiryReqOrderLines> orderLines = new ArrayList<>();
+
+        returnEligibleLines.parallelStream().forEach(returnEligibleLine -> {
+            ReturnRefundEnquiryReqOrderLines orderLine = new ReturnRefundEnquiryReqOrderLines();
+            orderLine.setItemId(returnEligibleLine.getItemId());
+            orderLine.setReturnQuantity(returnEligibleLine.getExcessQuantity());
+            orderLines.add(orderLine);
+        });
+
+        refundEnquiryReq.setCustomerOrderId(customerOrder.getCustomerOrderId());
+        refundEnquiryReq.setEnterpriseCode(customerOrder.getEnterpriseCode());
+        refundEnquiryReq.setIsGuestUser(customerOrder.getIsGuestUser());
+        refundEnquiryReq.setDeliveryType(customerOrder.getOrderLines()
+                .get(0)
+                .getDeliveryType());
+        //refundEnquiryReq.setSource(customerOrder.get);
+        //refundEnquiryReq.setIsRefundOptionRequired(isRefundOptionRequired);
+        //refundEnquiryReq.setIsIebRequired(isIebRequired);
+        refundEnquiryReq.setOrderLines(orderLines);
+        return refundEnquiryReq;
+    }
 
 }

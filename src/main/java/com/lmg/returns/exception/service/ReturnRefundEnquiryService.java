@@ -2,6 +2,9 @@ package com.lmg.returns.exception.service;
 
 import com.lmg.returns.exception.model.order.returns.*;
 import com.lmg.returns.exception.model.order.sales.CustomerOrderDetailsResponse;
+import com.lmg.returns.exception.util.ApplicationConfig;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -14,42 +17,20 @@ import java.util.Map;
 @Service("returnRefundEnquiryService")
 public class ReturnRefundEnquiryService {
 
+    @Autowired
+    ApplicationConfig applicationConfig;
+
     public Mono<ReturnRefundEnquiryResp> getRefundDetails(ReturnRefundEnquiryReq returnRefundEnquiryReq) {
-        return WebClient.create("http://localhost:8080")
+        return WebClient.create(applicationConfig.getBaseURL())
                 .post()
-                .uri("/v1/test/refund")
+                .uri(StringUtils.replace(applicationConfig.getReturnRefundEnquiryURI(), "{customer-order-id}",
+                        returnRefundEnquiryReq.getCustomerOrderId()))
+                .header("x-ibm-client-id", applicationConfig.getAppClientId())
+                .header("Authorization", "Bearer " + applicationConfig.getBearerToken())
                 .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
                 .body(Mono.just(returnRefundEnquiryReq), ReturnRefundEnquiryReq.class)
                 .exchange()
                 .flatMap(clientResponse -> clientResponse.bodyToMono(ReturnRefundEnquiryResp.class));
     }
-
-    public static ReturnRefundEnquiryReq convertToReturnRefundEnquiryReq(List<ReturnExcessReqOrderLine> returnEligibleLines,
-                                                                   Map<String, Object> contextMap) {
-
-        CustomerOrderDetailsResponse customerOrder = (CustomerOrderDetailsResponse) contextMap.get("customerOrder");
-        ReturnRefundEnquiryReq refundEnquiryReq = new ReturnRefundEnquiryReq();
-        List<ReturnRefundEnquiryReqOrderLines> orderLines = new ArrayList<>();
-
-        returnEligibleLines.parallelStream().forEach(returnEligibleLine -> {
-            ReturnRefundEnquiryReqOrderLines orderLine = new ReturnRefundEnquiryReqOrderLines();
-            orderLine.setItemId(returnEligibleLine.getItemId());
-            orderLine.setReturnQuantity(returnEligibleLine.getExcessQuantity());
-            orderLines.add(orderLine);
-        });
-
-        refundEnquiryReq.setCustomerOrderId(customerOrder.getCustomerOrderId());
-        refundEnquiryReq.setEnterpriseCode(customerOrder.getEnterpriseCode());
-        refundEnquiryReq.setIsGuestUser(customerOrder.getIsGuestUser());
-        refundEnquiryReq.setDeliveryType(customerOrder.getOrderLines()
-                .get(0)
-                .getDeliveryType());
-        //refundEnquiryReq.setSource(customerOrder.get);
-        //refundEnquiryReq.setIsRefundOptionRequired(isRefundOptionRequired);
-        //refundEnquiryReq.setIsIebRequired(isIebRequired);
-        refundEnquiryReq.setOrderLines(orderLines);
-        return refundEnquiryReq;
-    }
-
-
 }

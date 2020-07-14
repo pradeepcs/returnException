@@ -6,6 +6,7 @@ import com.lmg.returns.exception.model.order.sales.CustomerOrderDetailsResponseO
 import com.lmg.returns.exception.util.ApplicationConfig;
 import com.lmg.returns.exception.util.RequestMapper;
 import com.lmg.returns.exception.util.ReturnExceptionHelper;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.SerializationUtils;
@@ -27,12 +28,13 @@ public class ReturnExceptionService {
     @Autowired
     ReturnRefundEnquiryService returnRefundEnquiryService;
 
+    @Setter
     @Autowired
     ApplicationConfig applicationConfig;
 
     public Mono<Void> processReturnException(ReturnExceptionReq returnExceptionReq) {
         Map<String, Object> contextMap = new HashMap<>();
-        Mono<CustomerOrderDetailsResponse> customerOrder = orderService.getsCustomerOrder(
+        Mono<CustomerOrderDetailsResponse> customerOrder = orderService.getCustomerOrder(
                 returnExceptionReq.getCustomerOrderId(), returnExceptionReq.getEnterpriseCode());
         customerOrder.subscribe(customerOrderDetailsResponse -> {
             contextMap.put("customerOrder", customerOrderDetailsResponse);
@@ -126,7 +128,7 @@ public class ReturnExceptionService {
     }
 
     private void getRefundOptionsAndCreateReturn(List<ReturnExcessReqOrderLine> eligibleReturnLines, Map<String, Object> contextMap) {
-        ReturnRefundEnquiryReq returnRefundEnquiryReq = ReturnRefundEnquiryService.convertToReturnRefundEnquiryReq(eligibleReturnLines, contextMap);
+        ReturnRefundEnquiryReq returnRefundEnquiryReq = RequestMapper.convertToReturnRefundEnquiryReq(eligibleReturnLines, contextMap);
         Mono<ReturnRefundEnquiryResp> returnRefundEnquiryResp = returnRefundEnquiryService.getRefundDetails(returnRefundEnquiryReq);
         returnRefundEnquiryResp.subscribe(returnRefundEnquiry -> {
             CreateReturnsReq createReturnsReq = RequestMapper.convertToCreateReturnsReq(returnRefundEnquiry, contextMap);
@@ -239,7 +241,7 @@ public class ReturnExceptionService {
                                               Map<String, Object> contextMap) {
         if(CollectionUtils.isNotEmpty(nonEligibleReturnLines)) {
             UpdateReturnOrderReq updateReturnOrderReq = RequestMapper.convertToUpdateReturnOrderReq(nonEligibleReturnLines, contextMap);
-            orderService.updateReturnOrderWithNonEligibleLines(updateReturnOrderReq);
+            orderService.updateReturnOrderWithNonEligibleLines(contextMap.get("customerReturnOrderId").toString(), updateReturnOrderReq);
         }
     }
 

@@ -3,15 +3,24 @@ app:
 ---
 app:
     profiles: dev
-    customerOrderURI: /v1/test/customerOrder
-    customerReturnOrderURI: /v1/test/returnOrders
+
+    appClientID: 1111111111112
+    bearerToken: f4ad8b5e-4fd7-4fe1-9b46-ad22758144e6
+    baseURL: https://lmsvimwppd.landmarkgroup.com
+
+    customerOrderURI: /v3/customer-orders/{customer-order-id}
+    customerOrderForReturnURI: /v3/customer-orders/{customer-order-id}/returns
+    customerReturnOrderURI: /v3/customer-return-orders/{customer-return-order-id}
+    returnRefundEnquiryURI: /v3/customer-orders/{customer-order-id}/events/return-refund-enquiry
+    asyncProcessIndicator: Yes
+
     returnOrderSourceType:
         - ONLINE
         - COCKPIT
 ---
 app:
     profiles: uat
-    customerOrderURI: /v1/test/customerOrder
+    customerOrderURI: /v1/test/customerOrder/
     customerReturnOrderURI: /v1/test/returnOrders
     returnOrderSourceType:
         - ONLINE

@@ -1,0 +1,53 @@
+{
+  "customer_order_id": "Y100000635",
+  "enterprise_code": "LMG_UAE",
+  "order_date": "",
+  "document_type": "",
+  "is_guest_user": "",
+  "shukran_loyalty_card_no": "",
+  "order_lines": [
+    {
+      "ordered_quantity": 6,
+      "department_code": "",
+      "prime_line_number": 1,
+      "returnable_quantity": 13,
+      "delivery_date": "",
+      "delivery_type": "",
+      "is_returnable": "Y",
+      "item_type": "",
+      "line_charges": [
+        {
+          "charge_category": "",
+          "charge_name": "",
+          "charge_per_unit": 4
+        }
+      ],
+      "line_price_information": {
+        "is_price_locked": "",
+        "refund_price": 1,
+        "unit_price": 1
+      },
+      "item_details": {
+        "item_id": "LMG1",
+        "unit_of_measure": "",
+        "description": "",
+        "product_line": ""
+      }
+    }
+  ],
+  "header_charges": [
+    {
+      "charge_amount": 30,
+      "charge_category": "",
+      "charge_name": ""
+    }
+  ],
+  "payment_methods": [
+    {
+      "payment_type": "CREDIT_CARD",
+      "amount": 20,
+      "payment_code": "CCARD",
+      "voucher_code": ""
+    }
+  ]
+}
